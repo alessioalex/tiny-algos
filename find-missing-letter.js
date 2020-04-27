@@ -14,7 +14,7 @@ abcdef =&gt; undefined
 function find(str) {
   const strLen = str.length;
 
-  for (var i = 1; i < strLen; i++) {
+  for (let i = 1; i < strLen; i++) {
     const nextCharCode = str.charCodeAt(i - 1) + 1;
 
     if (nextCharCode !== str.charCodeAt(i)) {
