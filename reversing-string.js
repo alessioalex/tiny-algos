@@ -17,8 +17,11 @@ function reverseString(str) {
 }
 
 function cheesingIt(str) {
+  // str.split('') not ideal for emojies, see https://twitter.com/addaleax/status/1243886629422587905
   return str.split('').reverse().join('');
 }
 
-console.log(reverseString('JavaScript'));
-console.log(cheesingIt('JavaScript'));
+['JavaScript', 'ʕ•́ᴥ•̀ʔっ♡'].forEach(str => {
+  console.log(reverseString(str));
+  console.log(cheesingIt(str));
+});
