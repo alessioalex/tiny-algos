@@ -104,24 +104,92 @@ function findCharByIndex(haystack, haystackLength, needle, indexToStartFrom) {
   return -1;
 }
 
-function shouldBe(args, result) {
-  console.log(`same_necklace('${args.join('\', \'')}') should equal ${result}`);
+function shouldBe(fn, args, expectedResult) {
+  console.log(`${fn.name}('${args.join('\', \'')}') should equal ${expectedResult}`);
 
-  if (same_necklace(...args) !== result) {
-    throw new Error(`invalid result`);
+  const actualResult = fn(...args);
+
+  if (actualResult !== expectedResult) {
+    console.error('INVALID RESULT');
+    console.error(`${actualResult} !== ${expectedResult}`);
+    process.exit(1);
   }
 }
 
-shouldBe(["nicole", "icolen"], true);
-shouldBe(["nicole", "lenico"], true);
-shouldBe(["nicole", "coneli"], false);
-shouldBe(["aabaaaaabaab", "aabaabaabaaa"], true);
-shouldBe(["abc", "cba"], false);
-shouldBe(["xxyyy", "xxxyy"], false);
-shouldBe(["xyxxz", "xxyxz"], false);
-shouldBe(["x", "x"], true);
-shouldBe(["x", "xx"], false);
-shouldBe(["x", ""], false);
-shouldBe(["", ""], true);
+shouldBe(same_necklace, ["nicole", "icolen"], true);
+shouldBe(same_necklace, ["nicole", "lenico"], true);
+shouldBe(same_necklace, ["nicole", "coneli"], false);
+shouldBe(same_necklace, ["aabaaaaabaab", "aabaabaabaaa"], true);
+shouldBe(same_necklace, ["abc", "cba"], false);
+shouldBe(same_necklace, ["xxyyy", "xxxyy"], false);
+shouldBe(same_necklace, ["xyxxz", "xxyxz"], false);
+shouldBe(same_necklace, ["x", "x"], true);
+shouldBe(same_necklace, ["x", "xx"], false);
+shouldBe(same_necklace, ["x", ""], false);
+shouldBe(same_necklace, ["", ""], true);
 // another example added by me
-shouldBe(["ab", "ba"], true);
+shouldBe(same_necklace, ["ab", "ba"], true);
+
+console.log();
+console.log('/////////////////////////////////////////////////////////////////');
+console.log();
+
+///////////////////////////////////////////////////////////////////////////////
+// Optional Bonus 1
+//
+// If you have a string of N letters and you move each letter one at a time from
+// the start to the end, you'll eventually get back to the string you started
+// with, after N steps. Sometimes, you'll see the same string you started with
+// before N steps. For instance, if you start with "abcabcabc", you'll see the
+// same string ("abcabcabc") 3 times over the course of moving a letter 9 times.
+//
+// Write a function that returns the number of times you encounter the same
+// starting string if you move each letter in the string from the start to the
+// end, one at a time.
+//
+// repeats("abc") => 1
+// repeats("abcabcabc") => 3
+// repeats("abcabcabcx") => 1
+// repeats("aaaaaa") => 6
+// repeats("a") => 1
+// repeats("") => 1
+
+function repeats(str) {
+  if (!str) { return 1; }
+
+  const original = Array.from(str);
+  const length = original.length;
+  const clone = original.slice(0);
+  const lastItemIndex = length - 1;
+  let repeats = 0;
+
+  // number of moves until we reach the original positions of the letters again
+  for (let i = 0; i < length; i++) {
+    const firstValue = clone[0];
+
+    for (let j = 0; j < lastItemIndex; j++) {
+      clone[j] = clone[j + 1];
+    }
+
+    clone[lastItemIndex] = firstValue;
+
+    if (isIdenticalArray(original, clone)) {
+      repeats++;
+    }
+  }
+
+  return repeats;
+}
+
+function isIdenticalArray(arrayA, arrayB) {
+  return !(arrayA.find((item, index) => item !== arrayB[index]));
+}
+
+shouldBe(repeats, ["abc"], 1);
+shouldBe(repeats, ["abcabcabc"], 3);
+shouldBe(repeats, ["abcabcabcx"], 1);
+shouldBe(repeats, ["aaaaaa"], 6);
+shouldBe(repeats, ["a"], 1);
+shouldBe(repeats, [""], 1);
+
+
